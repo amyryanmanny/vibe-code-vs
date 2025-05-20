@@ -15,9 +15,9 @@ wss.on('connection', (ws) => {
   // Handle incoming messages
   ws.on('message', (message) => {
     sharedMarkdown = message.toString(); // Update shared content
-    // Broadcast the updated content to all clients
+    // Broadcast the updated content to all clients except the sender
     wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send(sharedMarkdown);
       }
     });
