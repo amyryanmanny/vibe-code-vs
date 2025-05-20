@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplayer Markdown Editor</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; gap: 20px; padding: 20px; }
+    textarea, div { width: 45%; height: 90vh; border: 1px solid #ccc; padding: 10px; }
+    textarea { font-family: monospace; }
+    div { overflow-y: auto; background: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <textarea id="editor" placeholder="Type Markdown here..."></textarea>
+  <div id="preview"></div>
+
+  <script>
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+    const ws = new WebSocket('ws://localhost:8080');
+
+    // Update preview when typing
+    editor.addEventListener('input', () => {
+      const markdown = editor.value;
+      ws.send(markdown); // Send updates to the server
+      updatePreview(markdown);
+    });
+
+    // Update editor and preview when receiving updates
+    ws.onmessage = (event) => {
+      const markdown = event.data;
+      editor.value = markdown;
+      updatePreview(markdown);
+    };
+
+    // Render Markdown to HTML (basic implementation)
+    function updatePreview(markdown) {
+      preview.innerHTML = markdown
+        .replace(/#/g, '<h1>')
+        .replace(/\n/g, '<br>');
+    }
+  </script>
+</body>
+</html>
