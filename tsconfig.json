@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     // Enable latest features
+    "jsx": "react-jsx",
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "ESNext",
@@ -9,6 +10,7 @@
 
     // Bundler mode
     "moduleResolution": "bundler",
+    "esModuleInterop": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,

@@ -3,44 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Syntax Highlighting Editor</title>
+  <title>Vibe Code Vs.</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css">
-  <style>
-    .CodeMirror {
-      height: 100vh;
-      width: 100vw;
-      font-family: monospace;
-    }
-  </style>
 </head>
 <body>
-  <textarea id="editor"></textarea>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/javascript/javascript.min.js"></script>
-  <script>
-    const ws = new WebSocket('ws://localhost:8080');
-
-    // Initialize CodeMirror
-    const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
-      mode: 'python',     // Set syntax highlighting mode
-      lineNumbers: true,  // Show line numbers
-      theme: 'default'    // Default theme
-    });
-
-    // Send updates to the server when typing
-    editor.on('change', () => {
-      const text = editor.getValue();
-      ws.send(text);
-    });
-
-    // Update editor when receiving updates
-    ws.onmessage = (event) => {
-      const text = event.data;
-      const cursor = editor.getCursor(); // Preserve cursor position
-      editor.setValue(text);
-      editor.setCursor(cursor);
-    };
-  </script>
+  <div id="root"></div>
+  <script src="dist/bundle.js"></script>
 </body>
 </html>
