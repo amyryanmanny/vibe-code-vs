@@ -3,43 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multiplayer Markdown Editor</title>
+  <title>Syntax Highlighting Editor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css">
   <style>
-    body { font-family: Arial, sans-serif; display: flex; gap: 20px; padding: 20px; }
-    textarea, div { width: 45%; height: 90vh; border: 1px solid #ccc; padding: 10px; }
-    textarea { font-family: monospace; }
-    div { overflow-y: auto; background: #f9f9f9; }
+    .CodeMirror {
+      height: 100vh;
+      width: 100vw;
+      font-family: monospace;
+    }
   </style>
 </head>
 <body>
-  <textarea id="editor" placeholder="Type Markdown here..."></textarea>
-  <div id="preview"></div>
+  <textarea id="editor"></textarea>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/javascript/javascript.min.js"></script>
   <script>
-    const editor = document.getElementById('editor');
-    const preview = document.getElementById('preview');
     const ws = new WebSocket('ws://localhost:8080');
 
-    // Update preview when typing
-    editor.addEventListener('input', () => {
-      const markdown = editor.value;
-      ws.send(markdown); // Send updates to the server
-      updatePreview(markdown);
+    // Initialize CodeMirror
+    const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+      mode: 'python',     // Set syntax highlighting mode
+      lineNumbers: true,  // Show line numbers
+      theme: 'default'    // Default theme
     });
 
-    // Update editor and preview when receiving updates
-    ws.onmessage = (event) => {
-      const markdown = event.data;
-      editor.value = markdown;
-      updatePreview(markdown);
-    };
+    // Send updates to the server when typing
+    editor.on('change', () => {
+      const text = editor.getValue();
+      ws.send(text);
+    });
 
-    // Render Markdown to HTML (basic implementation)
-    function updatePreview(markdown) {
-      preview.innerHTML = markdown
-        .replace(/#/g, '<h1>')
-        .replace(/\n/g, '<br>');
-    }
+    // Update editor when receiving updates
+    ws.onmessage = (event) => {
+      const text = event.data;
+      const cursor = editor.getCursor(); // Preserve cursor position
+      editor.setValue(text);
+      editor.setCursor(cursor);
+    };
   </script>
 </body>
 </html>
