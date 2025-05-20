@@ -1,9 +1,10 @@
 {
   "name": "vibe-code-vs",
-  "module": "server.js",
+  "module": "server.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "eslint": "^9.27.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
